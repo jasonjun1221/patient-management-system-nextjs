@@ -8,7 +8,7 @@ interface ButtonProps {
   children: React.ReactNode;
 }
 
-function SubmitButton({ isLoading, className, children }: ButtonProps) {
+export default function SubmitButton({ isLoading, className, children }: ButtonProps) {
   return (
     <Button type="submit" className={className ?? "shad-primary-btn w-full"} disabled={isLoading}>
       {isLoading ? (
@@ -22,5 +22,3 @@ function SubmitButton({ isLoading, className, children }: ButtonProps) {
     </Button>
   );
 }
-
-export default SubmitButton;
