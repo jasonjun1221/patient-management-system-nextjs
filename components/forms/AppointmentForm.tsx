@@ -55,7 +55,6 @@ export default function AppointmentForm({ type, userId, patientId }: Appointment
 
     try {
       if (type === "create" && patientId) {
-        
         const appointmentData = {
           userId,
           patient: patientId,
@@ -115,13 +114,7 @@ export default function AppointmentForm({ type, userId, patientId }: Appointment
               {Doctors.map((doctor) => (
                 <SelectItem key={doctor.name} value={doctor.name}>
                   <div className="flex cursor-pointer items-center gap-2">
-                    <Image
-                      src={doctor.image}
-                      alt={doctor.name}
-                      width={32}
-                      height={32}
-                      className="rounded-full border border-dark-500"
-                    />
+                    <Image src={doctor.image} alt={doctor.name} width={32} height={32} className="rounded-full border border-dark-500" />
                     <p>{doctor.name}</p>
                   </div>
                 </SelectItem>
@@ -167,10 +160,7 @@ export default function AppointmentForm({ type, userId, patientId }: Appointment
           />
         )}
 
-        <SubmitButton
-          isLoading={isLoading}
-          className={`${type === "cancel" ? "shad-danger-btn" : "shad-primary-btn"} w-full`}
-        >
+        <SubmitButton isLoading={isLoading} className={`${type === "cancel" ? "shad-danger-btn" : "shad-primary-btn"} w-full`}>
           {buttonLabel}
         </SubmitButton>
       </form>

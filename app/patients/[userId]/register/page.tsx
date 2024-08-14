@@ -3,6 +3,9 @@ import { getUser } from "@/lib/actions/patient.actions";
 import Image from "next/image";
 import React from "react";
 
+// http://localhost:3000/patients/66af2d2b00074f5aa0b5/register
+// params = { userId: "66af2d2b00074f5aa0b5" }
+
 export default async function Register({ params: { userId } }: SearchParamProps) {
   const user = await getUser(userId);
 
