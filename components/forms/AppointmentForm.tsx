@@ -13,15 +13,18 @@ import { Doctors } from "@/constants";
 import { SelectItem } from "../ui/select";
 import Image from "next/image";
 import { getAppointmentSchema } from "@/lib/validation";
-import { createAppointment } from "@/lib/actions/appointment.actions";
+import { createAppointment, updateAppointment } from "@/lib/actions/appointment.actions";
+import { Appointment } from "@/types/appwrite.types";
 
 interface AppointmentFormProps {
   type: "create" | "cancel" | "schedule";
   userId: string;
   patientId: string;
+  appointment?: Appointment;
+  setOpen: (open: boolean) => void;
 }
 
-export default function AppointmentForm({ type, userId, patientId }: AppointmentFormProps) {
+export default function AppointmentForm({ type, userId, patientId, appointment, setOpen }: AppointmentFormProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const AppointmentFormValidation = getAppointmentSchema(type);
@@ -69,6 +72,25 @@ export default function AppointmentForm({ type, userId, patientId }: Appointment
         if (appointment) {
           form.reset();
           router.push(`/patients/${userId}/new-appointment/success?appointmentId=${appointment.$id}`);
+        } else {
+          const appointmentToUpdate = {
+            userId,
+            appointmentId: appointment?.$id,
+            appointment: {
+              primaryPhysician: values?.primaryPhysician,
+              schedule: new Date(values?.schedule),
+              status: status as Status,
+              cancellationReason: values?.cancellationReason,
+            },
+            type,
+          };
+
+          const updatedAppointment = await updateAppointment(appointmentToUpdate);
+
+          if (updatedAppointment) {
+            setOpen && setOpen(false);
+            form.reset();
+          }
         }
       }
     } catch (error) {
@@ -97,10 +119,12 @@ export default function AppointmentForm({ type, userId, patientId }: Appointment
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1 space-y-8">
-        <section className="mb-12 space-y-4">
-          <h1 className="header">New Appointment</h1>
-          <p className="text-dark-700">Request a new appointment by filling out the form below.</p>
-        </section>
+        {type === "create" && (
+          <section className="mb-12 space-y-4">
+            <h1 className="header">New Appointment</h1>
+            <p className="text-dark-700">Request a new appointment by filling out the form below.</p>
+          </section>
+        )}
 
         {type !== "cancel" && (
           <>
